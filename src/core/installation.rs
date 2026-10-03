@@ -12,7 +12,7 @@ pub(super) async fn inspect(
     requirements: &[CoreRequirement],
     include_service_digest: bool,
 ) -> anyhow::Result<InstallationStatus> {
-    anyhow::ensure!(requirements.len() <= 2, "at most two cores can be inspected");
+    anyhow::ensure!(requirements.len() <= 8, "at most eight cores can be inspected");
     let recovering = match load_active_owner().await? {
         Some(owner) => load_owner_desired_state(&owner.owner_key).await?.core_should_be_running,
         None => false,

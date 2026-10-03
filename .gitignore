@@ -4,4 +4,4 @@
 *.exe
 /temp
 /target
-logs
+logsservice-patched.zip
