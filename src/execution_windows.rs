@@ -59,7 +59,7 @@ pub(super) fn require_stopped_service() -> Result<()> {
 
 pub(super) fn require_no_core_process(include_service: bool) -> Result<()> {
     #[cfg(not(feature = "test"))]
-    const CORE_NAMES: &[&str] = &["verge-mihomo.exe", "verge-mihomo-alpha.exe"];
+    const CORE_NAMES: &[&str] = &["verge-mihomo.exe", "verge-mihomo-alpha.exe", "verge-mihomo-compat.exe"];
     #[cfg(feature = "test")]
     const CORE_NAMES: &[&str] = &["mock_binary.exe", "crash_binary.exe"];
     let raw = unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0) };

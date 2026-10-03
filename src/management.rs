@@ -167,7 +167,8 @@ impl PreparedCores {
             anyhow::ensure!(
                 [
                     format!("verge-mihomo{}", std::env::consts::EXE_SUFFIX),
-                    format!("verge-mihomo-alpha{}", std::env::consts::EXE_SUFFIX)
+                    format!("verge-mihomo-alpha{}", std::env::consts::EXE_SUFFIX),
+                    format!("verge-mihomo-compat{}", std::env::consts::EXE_SUFFIX)
                 ]
                 .contains(&core.name),
                 "unsupported core name {}",

@@ -331,7 +331,15 @@ fn require_no_unix_core_processes(processes: &str, include_service: bool) -> Res
             .unwrap_or((process.trim(), ""));
         let executable = Path::new(process.trim());
         let name = executable.file_name().and_then(|name| name.to_str()).unwrap_or("");
-        if ["verge-mihomo", "verge-mihomo-alpha", "verge-mihomo-al"].contains(&name) {
+        if [
+            "verge-mihomo",
+            "verge-mihomo-alpha",
+            "verge-mihomo-al",
+            "verge-mihomo-compat",
+            "verge-mihomo-com",
+        ]
+        .contains(&name)
+        {
             remaining_core.get_or_insert(name);
         }
         if include_service && ["clash-verge-service", "clash-verge-ser"].contains(&name) {

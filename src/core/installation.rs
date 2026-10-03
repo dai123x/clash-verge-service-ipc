@@ -51,6 +51,7 @@ fn inspect_core(directory: &Path, required: &CoreRequirement) -> CoreAvailabilit
     let allowed = [
         format!("verge-mihomo{}", std::env::consts::EXE_SUFFIX),
         format!("verge-mihomo-alpha{}", std::env::consts::EXE_SUFFIX),
+        format!("verge-mihomo-compat{}", std::env::consts::EXE_SUFFIX),
     ];
     if !allowed.contains(&required.name) {
         return CoreAvailability::Rejected {
