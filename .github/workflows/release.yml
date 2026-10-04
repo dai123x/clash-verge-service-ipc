@@ -68,7 +68,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Compat fork: only the target consumed by clash-verge-rev's Windows prebuild.
+          # Compat fork releases carry the PATCHED service binaries for Windows x64
+          # only (the compat patches target Windows service IPC). Client prebuilds
+          # download per-platform service assets from the upstream repo, which
+          # already publishes macOS/Linux/Windows builds for every tag.
           - os: windows-latest
             target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
