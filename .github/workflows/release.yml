@@ -64,16 +64,26 @@ jobs:
   build:
     name: Build ${{ matrix.target }}
     needs: prepare
+    env:
+      # Codesign with a real identity only when the secret is configured;
+      # otherwise fall back to ad-hoc signing (required for arm64 macOS).
+      APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          # Compat fork releases carry the PATCHED service binaries for Windows x64
-          # only (the compat patches target Windows service IPC). Client prebuilds
-          # download per-platform service assets from the upstream repo, which
-          # already publishes macOS/Linux/Windows builds for every tag.
+          # Compat fork releases carry the PATCHED service binaries (approving the
+          # verge-mihomo-compat core). clash-verge-rev's prebuild downloads these
+          # assets for every platform it builds on, so the matrix must cover all
+          # client platforms.
           - os: windows-latest
             target: x86_64-pc-windows-msvc
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -120,7 +130,7 @@ jobs:
           features: standalone,client
 
       - name: CodeSign macOS binaries
-        if: startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'macos') && env.APPLE_CERTIFICATE != ''
         shell: bash
         run: |
           echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > cert.p12
@@ -142,6 +152,14 @@ jobs:
               "target/${{ matrix.target }}/release/$bin"
             codesign -dvv "target/${{ matrix.target }}/release/$bin"
             codesign -d --entitlements /dev/stdout "target/${{ matrix.target }}/release/$bin"
+          done
+
+      - name: Ad-hoc sign macOS binaries (no signing cert configured)
+        if: startsWith(matrix.os, 'macos') && env.APPLE_CERTIFICATE == ''
+        shell: bash
+        run: |
+          for bin in clash-verge-service clash-verge-service-install clash-verge-service-uninstall; do
+            codesign --force --sign - "target/${{ matrix.target }}/release/$bin"
           done
 
       - name: Package Windows binaries
