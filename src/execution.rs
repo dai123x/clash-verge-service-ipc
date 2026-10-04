@@ -336,7 +336,8 @@ fn require_no_unix_core_processes(processes: &str, include_service: bool) -> Res
             "verge-mihomo-alpha",
             "verge-mihomo-al",
             "verge-mihomo-compat",
-            "verge-mihomo-com",
+            // Linux comm is capped at 15 chars (TASK_COMM_LEN = 16 incl. NUL)
+            "verge-mihomo-co",
         ]
         .contains(&name)
         {
@@ -633,6 +634,14 @@ mod tests {
     fn linux_truncated_alpha_core_blocks_fallback() {
         for ipc_failed in [false, true] {
             assert!(require_no_unix_core_processes("verge-mihomo-al", ipc_failed).is_err());
+        }
+    }
+
+    #[cfg(all(unix, feature = "client"))]
+    #[test]
+    fn linux_truncated_compat_core_blocks_fallback() {
+        for ipc_failed in [false, true] {
+            assert!(require_no_unix_core_processes("verge-mihomo-co", ipc_failed).is_err());
         }
     }
 
